@@ -12,8 +12,10 @@ jobs:
     - name: Clone Git repo
     - uses: actions/checkout@v2
     
-    - name: Build and push the Docker image
-      run: |
-        echo "${{ secrets.DOCKER_HUB_TOKEN }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin docker.io
-        docker build . --file Dockerfile --tag docker.io/${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.DOCKER_HUB_REPOSITORY }}:$GITHUB_SHA
-        docker push docker.io/${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.DOCKER_HUB_REPOSITORY }}:$GITHUB_SHA
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v2.7.0
+      with:
+        username: ${{ secrets.DOCKER_HUB_USERNAME }}
+        password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+        repository: globart/github_cv
+        tags: latest, ${{ github.run_number }}
